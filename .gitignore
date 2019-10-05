@@ -1,0 +1,7 @@
+data/*
+data_raw/*
+src/*
+results/*
+.idea
+lme4pureR/*
+lme4pureR
