@@ -1,4 +1,3 @@
-data/*
 data_raw/*
 src/*
 results/*
@@ -6,3 +5,4 @@ results/*
 lme4pureR/*
 lme4pureR
 .Rproj.user
+.ipynb_checkpoints/
