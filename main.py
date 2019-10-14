@@ -4,6 +4,8 @@ import pandas as pd
 from patsy import dmatrices
 from sklearn.preprocessing import LabelEncoder
 
+from lme.reml import estimate_ranef_variance
+
 tab = pandas.read_csv("./data/sleepstudy.csv")
 
 Y, X = dmatrices("Reaction ~ Days", tab)
@@ -27,4 +29,5 @@ def _build_ranef_model_matrix(tab, factor, ranef):
 
 Z = _build_ranef_model_matrix(tab, "Subject", "Days")
 
-print(Z)
+
+estimate_ranef_variance(Y, X, Z)

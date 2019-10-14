@@ -1,9 +1,38 @@
+import scipy
 
 
+def _profile_loglik(family):
+    def _gaussian(nu, y, X, Z):
+        G = scipy.zeros(shape=(Z.shape[1], Z.shape[1]))
+        R = scipy.zeros(shape=(len(y), len(y)))
+        v_nu = Z.matmul(G).matmul(Z.T) + R
+        v_nu_inv = scipy.linalg.inv(v_nu)
+        b_hat = \
+            scipy.linalg.inv(X.T.matmul(v_nu_inv).matmul(X)) \
+            .matmul(X.T)\
+            .matmul(v_nu_inv)\
+            .dot(y)
+        x_bhat = scipy.dot(X, b_hat)
+        wls = (y - x_bhat).T.matmul(v_nu_inv).matmul(y - x_bhat)
+        res = .5 * (scipy.log(scipy.linalg.det(v_nu)) + wls)
+        return res
 
-def estimate_ranef_variance(Y, X, Z):
-    return
+    return {
+        'gaussian': _gaussian
+    }.get(family, "gaussian")
 
 
-def estimate_ranef_variance(Y, X, Z):
-    return
+def _restricted_loglik(family):
+    def _gaussian(nu, Y, X):
+        return 1
+
+    return {
+        'gaussian': _gaussian
+    }.get(family, "gaussian")
+
+
+def predict_ranef_variance(Y, X, Z, family="gaussian"):
+    logf = _restricted_loglik(family)
+    nu0 = scipy.ones(shape=(10,))
+    optim = scipy.optimize.minimize(logf, nu0)
+    return optim
