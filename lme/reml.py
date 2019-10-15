@@ -2,9 +2,11 @@ import scipy
 
 
 def _profile_loglik(family):
-    def _gaussian(nu, y, X, Z):
+    def _gaussian(nu, Y, X, Z):
+
         G = scipy.zeros(shape=(Z.shape[1], Z.shape[1]))
-        R = scipy.zeros(shape=(len(y), len(y)))
+        R = scipy.zeros(shape=(Y.shape[1], Y.shape[1]))
+
         v_nu = Z.matmul(G).matmul(Z.T) + R
         v_nu_inv = scipy.linalg.inv(v_nu)
         b_hat = \
