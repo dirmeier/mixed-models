@@ -1,32 +1,41 @@
 import scipy as sp
 
-from lme.util import block_diag
+from lme.util import block_diag, as_ranef_cov, diag, marginal_variance
 
 
-def _profile_loglik(family):
+def profile_loglik(family):
     def _gaussian(nu, y, X, U):
         n = len(y)
         q = int(U.shape[1] / 2)
 
-        Q = sp.zeros(shape=(2, 2))
-        Q[sp.tril_indices(2)] = nu[1:]
-        G = block_diag(Q, q)
-        R = sp.diag(nu[0] * sp.ones(n))
+        G = block_diag(as_ranef_cov(nu[1:]), q)
+        R = diag(n, nu[0])
+        V = marginal_variance(U, G, R)
+        V_inv = sp.linalg.inv(V)
 
-        v_nu = U.dot(G).dot(U.T) + R
-        v_nu_inv = sp.linalg.inv(v_nu)
-        x_vinv_x = X.T.dot(v_nu_inv).dot(X)
+        X_Vinv_X = X.T.dot(V_inv).dot(X)
         b_hat = \
-            sp.linalg.inv(x_vinv_x) \
+            sp.linalg.inv(X_Vinv_X) \
             .dot(X.T)\
-            .dot(v_nu_inv)\
+            .dot(V_inv)\
             .dot(y)
 
         x_bhat = sp.dot(X, b_hat)
-        wls = (y - x_bhat).T.dot(v_nu_inv).dot(y - x_bhat)
-        res = (sp.log(sp.linalg.det(v_nu)) + wls).flatten()
-        return res, x_vinv_x
+        wls = (y - x_bhat).T.dot(V_inv).dot(y - x_bhat)
+        res = (sp.log(sp.linalg.det(V)) + wls).flatten()
+        return res, X_Vinv_X
 
     return {
         'gaussian': _gaussian
     }.get(family, "gaussian")
+
+
+def ml(y, X, U, family="gaussian"):
+    nu0 = sp.array([1, 1, 0.5, 1])
+    pll = profile_loglik(family)
+    fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
+
+    optim = sp.optimize.minimize(
+      fn, nu0, args=(y, X, U),
+      method='Nelder-Mead')
+    return optim

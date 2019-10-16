@@ -5,7 +5,7 @@ from patsy import dmatrices
 import scipy.stats as st
 from sklearn.preprocessing import LabelEncoder
 
-from lme.reml import predict_ranef_variance
+from lme.ml import ml
 from lme.util import block_diag
 
 rmvnorm = st.multivariate_normal.rvs
@@ -30,8 +30,9 @@ def _build_ranef_model_matrix(tab, factor, ranef):
 if __name__ == "__main__":
     tab = pandas.read_csv("./data/sleepstudy.csv")
     _, X = dmatrices("Reaction~ Days", tab)
-    X = np.asarray(X)
+    X = np.concatenate([X, X, X, X, X])
     U = _build_ranef_model_matrix(tab, "Subject", "Days")
+    U = np.concatenate([U, U, U, U, U])
 
     n, p = X.shape
     q = int(U.shape[1] / 2)
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     beta = np.array([2, 1])
     Q = sd * np.array([[1, 0.25], [0.25, 1]])
     V = U.dot(block_diag(Q, q)).dot(U.T) + np.diag(sd * np.ones(n))
-    print(Q)
     y = rmvnorm(size=1, mean=X.dot(beta), cov=V)
 
-    predict_ranef_variance(y, X, U)
+    optimz = ml(y, X, U)
+    as_cov(optimz.x[1:])
