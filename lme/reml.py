@@ -1,40 +1,32 @@
-import scipy
+import scipy as sp
 
-
-def _profile_loglik(family):
-    def _gaussian(nu, Y, X, Z):
-
-        G = scipy.zeros(shape=(Z.shape[1], Z.shape[1]))
-        R = scipy.zeros(shape=(Y.shape[1], Y.shape[1]))
-
-        v_nu = Z.matmul(G).matmul(Z.T) + R
-        v_nu_inv = scipy.linalg.inv(v_nu)
-        b_hat = \
-            scipy.linalg.inv(X.T.matmul(v_nu_inv).matmul(X)) \
-            .matmul(X.T)\
-            .matmul(v_nu_inv)\
-            .dot(y)
-        x_bhat = scipy.dot(X, b_hat)
-        wls = (y - x_bhat).T.matmul(v_nu_inv).matmul(y - x_bhat)
-        res = .5 * (scipy.log(scipy.linalg.det(v_nu)) + wls)
-        return res
-
-    return {
-        'gaussian': _gaussian
-    }.get(family, "gaussian")
+from lme.ml import _profile_loglik
 
 
 def _restricted_loglik(family):
-    def _gaussian(nu, Y, X):
-        return 1
+    pll = _profile_loglik(family)
+    def _gaussian(nu, y, X, Z):
+        pll_res, v_nu_inv = pll(nu, y, X, Z)
+        res = pll_res + sp.log(sp.linalg.det(v_nu_inv)).flatten()
+        return res, v_nu_inv
 
     return {
         'gaussian': _gaussian
     }.get(family, "gaussian")
 
 
-def predict_ranef_variance(Y, X, Z, family="gaussian"):
-    logf = _restricted_loglik(family)
-    nu0 = scipy.ones(shape=(10,))
-    optim = scipy.optimize.minimize(logf, nu0)
+def predict_ranef_variance(y, X, U, family="gaussian"):
+    nu0 = sp.array([1, 1, 0.5, 1])
+    pll = _restricted_loglik(family)
+    fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
+
+    print("start")
+    optim = sp.optimize.minimize(
+      fn, nu0, args=(y, X, U),
+      method='L-BFGS-B',
+      bounds=((0.1, None), (None, 5), (None, 5), (None, 5)))
+    print(optim)
+    Q = sp.zeros(shape=(2, 2))
+    Q[sp.tril_indices(2)] = optim.x[1:]
+    print(Q.dot(Q.T))
     return optim
