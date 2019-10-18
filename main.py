@@ -63,7 +63,7 @@ def glme():
     q = int(U.shape[1] / 2)
 
     sd = 0.1
-    beta = sp.array([2, 1])
+    beta = sp.array([.1, .1])
     Q = sd * sp.array([[1, 0.25], [0.25, 1]])
     gamma = rmvnorm(mean=sp.zeros(q * 2), cov=block_diag(Q, q))
 
@@ -75,15 +75,15 @@ def glme():
     b_tilde = bold = sp.ones(shape=p)
     g_tilde = gold = sp.ones(shape=q * 2)
     while True:
-        y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.absolute)
+        y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.exp)
         optimz = optim(fn, y_tilde, X, U, iter=1)
         sd_hat, nu_hat = optimz['sigma'], optimz['nu']
         V_hat, G_hat, R_hat = v(sd_hat, nu_hat, n, q, U)
-        b_tilde = wls(y, X, V_hat)
-        g_tilde = solve_gamma(y, X, G_hat, U, V_hat, b_tilde)
+        b_tilde = wls(y_tilde, X, V_hat)
+        g_tilde = solve_gamma(y_tilde, X, G_hat, U, V_hat, b_tilde)
 
-        if sp.sum((b_tilde - bold) ** 2) < 0.1 and \
-           sp.sum((g_tilde - gold) ** 2) < 0.1:
+        if sp.sum((b_tilde - bold) ** 2) < 0.0001 and \
+           sp.sum((g_tilde - gold) ** 2) < 0.0001:
            break
         bold, gold = b_tilde, g_tilde
 
