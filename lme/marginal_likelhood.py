@@ -30,18 +30,22 @@ def profile_mll(family):
     return {
         'gaussian': _gaussian,
         'poisson': _poisson
-    }.get(family, "gaussian")
+    }.get(family, _gaussian)
 
 
 def restricted_mll(family):
     pll = profile_mll(family)
 
     def _gaussian(nu, y, X, Z):
-        pll_res, V_inv = pll(nu, y, X, Z)
+        pll_res, X_Vinv_X = pll(nu, y, X, Z)
         res = pll_res + \
-              sp.log(sp.linalg.det(X.T.dot(V_inv.dot(X)))).flatten()
-        return res, V_inv
+              sp.log(sp.linalg.det(X_Vinv_X)).flatten()
+        return res, X_Vinv_X
+
+    def _poisson(par, y, X, U):
+        return _gaussian(par, y, X, U)
 
     return {
-        'gaussian': _gaussian
-    }.get(family, "gaussian")
+        'gaussian': _gaussian,
+        'poisson': _poisson
+    }.get(family, _gaussian)
