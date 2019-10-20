@@ -1,5 +1,4 @@
-import scipy as sp
-
+import jax.scipy as sp
 from lme.util import v
 
 
@@ -13,11 +12,7 @@ def profile_mll(family):
         V_inv = sp.linalg.inv(V)
 
         X_Vinv_X = X.T.dot(V_inv).dot(X)
-        b_hat = \
-            sp.linalg.inv(X_Vinv_X) \
-            .dot(X.T) \
-            .dot(V_inv) \
-            .dot(y)
+        b_hat = sp.linalg.inv(X_Vinv_X).dot(X.T).dot(V_inv).dot(y)
 
         x_bhat = sp.dot(X, b_hat)
         wls = (y - x_bhat).T.dot(V_inv).dot(y - x_bhat)
@@ -27,10 +22,7 @@ def profile_mll(family):
     def _poisson(par, y, X, U):
         return _gaussian(par, y, X, U)
 
-    return {
-        'gaussian': _gaussian,
-        'poisson': _poisson
-    }.get(family, _gaussian)
+    return {"gaussian": _gaussian, "poisson": _poisson}.get(family, _gaussian)
 
 
 def restricted_mll(family):
@@ -38,14 +30,10 @@ def restricted_mll(family):
 
     def _gaussian(nu, y, X, Z):
         pll_res, X_Vinv_X = pll(nu, y, X, Z)
-        res = pll_res + \
-              sp.log(sp.linalg.det(X_Vinv_X)).flatten()
+        res = pll_res + sp.log(sp.linalg.det(X_Vinv_X)).flatten()
         return res, X_Vinv_X
 
     def _poisson(par, y, X, U):
         return _gaussian(par, y, X, U)
 
-    return {
-        'gaussian': _gaussian,
-        'poisson': _poisson
-    }.get(family, _gaussian)
+    return {"gaussian": _gaussian, "poisson": _poisson}.get(family, _gaussian)

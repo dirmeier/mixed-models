@@ -1,9 +1,11 @@
 import scipy as sp
+import jax.scipy as jsp
 import pandas
 import pandas as pd
 from patsy import dmatrices
 import scipy.stats as st
 from sklearn.preprocessing import LabelEncoder
+from jax import grad
 
 from lme.optim import optim
 from lme.ls import wls, solve_gamma, working_response
@@ -43,7 +45,7 @@ def lme():
                 cov=sp.diag(sd * sp.ones(n)))
 
     pll = restricted_mll("gaussian")
-    fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
+    fn = lambda nu, y, X, U: jsp.asscalar(pll(nu, y, X, U)[0])
     optimz = optim(fn, y, X, U)
     sd_hat, nu_hat = optimz['sigma'], optimz['nu']
 
@@ -74,8 +76,12 @@ def glme():
 
     b_tilde = bold = sp.ones(shape=p)
     g_tilde = gold = sp.ones(shape=q * 2)
+    
+    invlink = sp.exp
+    gradinvlink = grad(invlink)
+    
     while True:
-        y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.exp)
+        y_tilde = working_response(y, X, U, b_tilde, g_tilde, invlink, gradinvlink)
         optimz = optim(fn, y_tilde, X, U, iter=1)
         sd_hat, nu_hat = optimz['sigma'], optimz['nu']
         V_hat, G_hat, R_hat = v(sd_hat, nu_hat, n, q, U)
@@ -96,9 +102,11 @@ def glme():
 
 
 if __name__ == "__main__":
-    sp.random.seed(42)
+    import scipy
+    scipy.random.seed(42)
     tab = pandas.read_csv("./data/sleepstudy.csv")
     _, X = dmatrices("Reaction~ Days", tab)
+    X = sp.asarray(X)
     U = _build_ranef_model_matrix(tab, "Subject", "Days")
 
     glme()

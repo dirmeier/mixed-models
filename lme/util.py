@@ -1,7 +1,6 @@
 import scipy as sp
 
 
-
 def block_diag(m, times):
     return sp.linalg.block_diag(*[m for _ in range(times)])
 
@@ -22,7 +21,7 @@ def marginal_variance(U, G, R):
     return U.dot(G).dot(U.T) + R
 
 
-def v(sigma, nu,  n, q, U):
+def v(sigma, nu, n, q, U):
     G = block_diag(as_ranef_cov(nu), q)
     R = diag(n, sigma)
     V = marginal_variance(U, G, R)
