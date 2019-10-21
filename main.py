@@ -58,8 +58,6 @@ def lme():
     print("gamma/gammahat:\n{}/\n{}\n".format(gamma, gamma_hat))
 
 
-
-
 def glme():
     n, p = X.shape
     q = int(U.shape[1] / 2)
@@ -88,13 +86,11 @@ def glme():
         G_hat = ranef_variance(nu_hat, q)
         b_tilde, g_tilde = irls(X, U, G_hat, w_tilde, y_tilde)
 
-        if sp.sum((b_tilde - bold) ** 2) < 0.001 and \
-           sp.sum((g_tilde - gold) ** 2) < 0.001:
+        if sp.sum((b_tilde - bold) ** 2) < 0.00001 and \
+           sp.sum((g_tilde - gold) ** 2) < 0.00001:
            break
         bold, gold = b_tilde, g_tilde
     
-    print("Q/Q_hat:\n{}/\n{}\n".format(Q, cholesky_factor(nu_hat)))
-
     print("beta/beta_hat:\n{}/{}\n".format(beta, b_tilde))
     print("gamma/gammahat:\n{}/\n{}\n".format(gamma, g_tilde))
 
