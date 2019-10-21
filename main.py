@@ -5,10 +5,10 @@ from patsy import dmatrices
 import scipy.stats as st
 from sklearn.preprocessing import LabelEncoder
 
-from lme.optim import optim
+from lme.optim import optim, optim_poisson
 from lme.ls import wls, solve_gamma, working_response, working_weight, irls
 from lme.marginal_likelhood import restricted_mll, profile_mll
-from lme.util import block_diag, as_ranef_cov, v
+from lme.util import block_diag, cholesky_factor, v, ranef_variance
 
 rmvnorm = st.multivariate_normal.rvs
 rpois = st.poisson.rvs
@@ -48,7 +48,7 @@ def lme():
     sd_hat, nu_hat = optimz['sigma'], optimz['nu']
 
     print("sigma/sigma_hat:\n{}/{}\n".format(sd, sd_hat))
-    print("Q/Q_hat:\n{}/\n{}\n".format(Q, as_ranef_cov(nu_hat)))
+    print("Q/Q_hat:\n{}/\n{}\n".format(Q, cholesky_factor(nu_hat)))
 
     V_hat, G_hat, R_hat = v(sd_hat, nu_hat, n, q, U)
     b_hat = wls(y, X, V_hat)
@@ -72,7 +72,7 @@ def glme():
     y = rpois(mu=sp.exp(X.dot(beta) + U.dot(gamma)))
 
     pll = restricted_mll("poisson")
-    fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
+    fn = lambda nu, y, X, U, W, b: sp.asscalar(pll(nu, y, X, U, W, b)[0])
 
     b_tilde = bold = sp.ones(shape=p)
     g_tilde = gold = sp.ones(shape=q * 2)
@@ -81,19 +81,19 @@ def glme():
         y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
         w_tilde = working_weight(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
         # TODO V is computed differently here ->? bug
-        optimz = optim(fn, y_tilde, X, U, iter=1)
-        sd_hat, nu_hat = optimz['sigma'], optimz['nu']
-        _, G_hat, _ = v(sd_hat, nu_hat, n, q, U)
+        optimz = optim_poisson(fn, y_tilde, X, U,
+                               sp.diag(w_tilde), b_tilde, iter=1)
+        nu_hat = optimz['nu']
+        
+        G_hat = ranef_variance(nu_hat, q)
         b_tilde, g_tilde = irls(X, U, G_hat, w_tilde, y_tilde)
 
         if sp.sum((b_tilde - bold) ** 2) < 0.001 and \
            sp.sum((g_tilde - gold) ** 2) < 0.001:
            break
         bold, gold = b_tilde, g_tilde
-
-
-    print("sigma/sigma_hat:\n{}/{}\n".format(sd, sd_hat))
-    print("Q/Q_hat:\n{}/\n{}\n".format(Q, as_ranef_cov(nu_hat)))
+    
+    print("Q/Q_hat:\n{}/\n{}\n".format(Q, cholesky_factor(nu_hat)))
 
     print("beta/beta_hat:\n{}/{}\n".format(beta, b_tilde))
     print("gamma/gammahat:\n{}/\n{}\n".format(gamma, g_tilde))
