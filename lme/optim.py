@@ -1,4 +1,4 @@
-import jax.scipy as sp
+import scipy as sp
 
 
 def optim(fn, y, X, U, iter=1000):

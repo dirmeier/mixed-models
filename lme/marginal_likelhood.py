@@ -1,4 +1,4 @@
-import jax.scipy as sp
+import scipy as sp
 from lme.util import v
 
 

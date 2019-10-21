@@ -1,14 +1,12 @@
 import scipy as sp
-import jax.scipy as jsp
 import pandas
 import pandas as pd
 from patsy import dmatrices
 import scipy.stats as st
 from sklearn.preprocessing import LabelEncoder
-from jax import grad
 
 from lme.optim import optim
-from lme.ls import wls, solve_gamma, working_response
+from lme.ls import wls, solve_gamma, working_response, working_weight, irls
 from lme.marginal_likelhood import restricted_mll, profile_mll
 from lme.util import block_diag, as_ranef_cov, v
 
@@ -29,7 +27,7 @@ def _build_ranef_model_matrix(tab, factor, ranef):
     Z = pd.concat([inter_tab, slope_tab], axis=1, sort=True)
     Z = Z.reindex(sorted(Z.columns, key=lambda x: x[1]), axis=1)
 
-    return Z.values
+    return sp.asarray(Z.values)
 
 
 def lme():
@@ -45,7 +43,7 @@ def lme():
                 cov=sp.diag(sd * sp.ones(n)))
 
     pll = restricted_mll("gaussian")
-    fn = lambda nu, y, X, U: jsp.asscalar(pll(nu, y, X, U)[0])
+    fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
     optimz = optim(fn, y, X, U)
     sd_hat, nu_hat = optimz['sigma'], optimz['nu']
 
@@ -58,6 +56,8 @@ def lme():
 
     print("beta/beta_hat:\n{}/{}\n".format(beta, b_hat))
     print("gamma/gammahat:\n{}/\n{}\n".format(gamma, gamma_hat))
+
+
 
 
 def glme():
@@ -77,19 +77,17 @@ def glme():
     b_tilde = bold = sp.ones(shape=p)
     g_tilde = gold = sp.ones(shape=q * 2)
     
-    invlink = sp.exp
-    gradinvlink = grad(invlink)
-    
     while True:
-        y_tilde = working_response(y, X, U, b_tilde, g_tilde, invlink, gradinvlink)
+        y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
+        w_tilde = working_weight(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
+        # TODO V is computed differently here ->? bug
         optimz = optim(fn, y_tilde, X, U, iter=1)
         sd_hat, nu_hat = optimz['sigma'], optimz['nu']
-        V_hat, G_hat, R_hat = v(sd_hat, nu_hat, n, q, U)
-        b_tilde = wls(y_tilde, X, V_hat)
-        g_tilde = solve_gamma(y_tilde, X, G_hat, U, V_hat, b_tilde)
+        _, G_hat, _ = v(sd_hat, nu_hat, n, q, U)
+        b_tilde, g_tilde = irls(X, U, G_hat, w_tilde, y_tilde)
 
-        if sp.sum((b_tilde - bold) ** 2) < 0.0001 and \
-           sp.sum((g_tilde - gold) ** 2) < 0.0001:
+        if sp.sum((b_tilde - bold) ** 2) < 0.001 and \
+           sp.sum((g_tilde - gold) ** 2) < 0.001:
            break
         bold, gold = b_tilde, g_tilde
 
@@ -103,10 +101,9 @@ def glme():
 
 if __name__ == "__main__":
     import scipy
-    scipy.random.seed(42)
+    scipy.random.seed(2)
     tab = pandas.read_csv("./data/sleepstudy.csv")
     _, X = dmatrices("Reaction~ Days", tab)
     X = sp.asarray(X)
     U = _build_ranef_model_matrix(tab, "Subject", "Days")
-
     glme()
