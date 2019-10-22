@@ -26,7 +26,6 @@ def working_weight(y, X, U, beta, gamma, invlink, grad):
 
 
 def irls(X, U, G, w, y):
-    
     C = np.hstack([X, U])
     W = np.diag(w)
     CTW = C.T.dot(W)
@@ -34,4 +33,4 @@ def irls(X, U, G, w, y):
     B = np.zeros_like(CTWC)
     B[(B.shape[0] - G.shape[0]):, (B.shape[1] - G.shape[1]):] = np.linalg.inv(G)
     est = np.linalg.inv(CTWC + B).dot(C.T).dot(W).dot(y)
-    return est[:X.shape[1]] , est[X.shape[1]:]
+    return est[:X.shape[1]], est[X.shape[1]:]
