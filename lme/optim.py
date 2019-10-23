@@ -1,28 +1,13 @@
 import scipy as sp
 
 
-def optim(fn, y, X, U, iter=1000):
+def optim(fn, init, bounds, args, iter=1000):
     optim = sp.optimize.minimize(
         fn,
-        sp.array([1, 1, 0.5, 1]),
-        args=(y, X, U),
+        init,
+        args=args,
         method="L-BFGS-B",
-        bounds=((0.01, None), (None, None), (None, None), (None, None)),
+        bounds=bounds,
         options={"maxiter": iter},
     )
-    sigma, nu = optim.x[0], optim.x[1:]
-
-    return {"sigma": sigma, "nu": nu}
-
-
-def optim_poisson(fn, y, X, U, w, b, iter=1000):
-    optim = sp.optimize.minimize(
-        fn,
-        sp.array([1, 0.5, 1]),
-        args=(y, X, U, w, b),
-        method="L-BFGS-B",
-        bounds=((None, None), (None, None), (None, None)),
-        options={"maxiter": iter},
-    )
-    
-    return {"nu": optim.x}
+    return optim

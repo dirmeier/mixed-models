@@ -1,14 +1,13 @@
-import scipy as sp
-import pandas
 import pandas as pd
-from patsy import dmatrices
+import scipy as sp
 import scipy.stats as st
+from patsy import dmatrices
 from sklearn.preprocessing import LabelEncoder
 
-from lme.optim import optim, optim_poisson
-from lme.ls import wls, solve_gamma, working_response, working_weight, irls
-from lme.marginal_likelhood import restricted_mll, profile_mll
-from lme.util import block_diag, cholesky_factor, v, ranef_variance
+from lme.ls import working_response, working_weight, irls
+from lme.marginal_likelhood import restricted_mll
+from lme.optim import optim
+from lme.util import block_diag, cholesky_factor, ranef_variance, diag
 
 rmvnorm = st.multivariate_normal.rvs
 rpois = st.poisson.rvs
@@ -31,42 +30,28 @@ def _build_ranef_model_matrix(tab, factor, ranef):
 
 
 def lme():
-    n, p = X.shape
-    q = int(U.shape[1] / 2)
-
-    sd = 0.1
-    beta = sp.array([2, 1])
-    Q = sd * sp.array([[1, 0.25], [0.25, 1]])
-    gamma = rmvnorm(mean=sp.zeros(q * 2), cov=block_diag(Q, q))
-
     y = rmvnorm(mean=X.dot(beta) + U.dot(gamma),
                 cov=sp.diag(sd * sp.ones(n)))
 
     pll = restricted_mll("gaussian")
     fn = lambda nu, y, X, U: sp.asscalar(pll(nu, y, X, U)[0])
-    optimz = optim(fn, y, X, U)
-    sd_hat, nu_hat = optimz['sigma'], optimz['nu']
+    opt = optim(fn,
+                sp.array([2, 5, 0.5, 1]),
+                ((0.01, None), (None, None), (None, None), (None, None)),
+                args=(y, X, U))
+    
+    sd_hat, nu_hat = opt.x[0], opt.x[1:]
+    G_hat = ranef_variance(nu_hat, q)
+    R_hat = diag(n, sd_hat)
+    b_hat, gamma_hat = irls(X, U, G_hat, 1/sp.diag(R_hat), y)
 
     print("sigma/sigma_hat:\n{}/{}\n".format(sd, sd_hat))
     print("Q/Q_hat:\n{}/\n{}\n".format(Q, cholesky_factor(nu_hat)))
-
-    V_hat, G_hat, R_hat = v(sd_hat, nu_hat, n, q, U)
-    b_hat = wls(y, X, V_hat)
-    gamma_hat = solve_gamma(y, X, G_hat, U, V_hat, b_hat)
-
     print("beta/beta_hat:\n{}/{}\n".format(beta, b_hat))
     print("gamma/gammahat:\n{}/\n{}\n".format(gamma, gamma_hat))
 
 
 def glme():
-    n, p = X.shape
-    q = int(U.shape[1] / 2)
-
-    sd = 0.1
-    beta = sp.array([.1, .1])
-    Q = sd * sp.array([[1, 0.25], [0.25, 1]])
-    gamma = rmvnorm(mean=sp.zeros(q * 2), cov=block_diag(Q, q))
-
     y = rpois(mu=sp.exp(X.dot(beta) + U.dot(gamma)))
 
     pll = restricted_mll("poisson")
@@ -78,10 +63,11 @@ def glme():
     while True:
         y_tilde = working_response(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
         w_tilde = working_weight(y, X, U, b_tilde, g_tilde, sp.exp, sp.exp)
-        # TODO V is computed differently here ->? bug
-        optimz = optim_poisson(fn, y_tilde, X, U,
-                               sp.diag(w_tilde), b_tilde, iter=1)
-        nu_hat = optimz['nu']
+        nu_hat = optim(fn,
+                       sp.array([1, 0.5, 0.1]),
+                       bounds=((None, None), (None, None), (None, None)),
+                       args=(y_tilde, X, U, sp.diag(w_tilde), b_tilde),
+                       iter=1).x
         
         G_hat = ranef_variance(nu_hat, q)
         b_tilde, g_tilde = irls(X, U, G_hat, w_tilde, y_tilde)
@@ -98,8 +84,17 @@ def glme():
 if __name__ == "__main__":
     import scipy
     scipy.random.seed(2)
-    tab = pandas.read_csv("./data/sleepstudy.csv")
+    tab = pd.read_csv("./data/sleepstudy.csv")
     _, X = dmatrices("Reaction~ Days", tab)
-    X = sp.asarray(X)
+    X = sp.asarray(X) / sp.asarray(X).mean()
     U = _build_ranef_model_matrix(tab, "Subject", "Days")
+
+    n, p = X.shape
+    q = int(U.shape[1] / 2)
+
+    sd = 0.1
+    beta = sp.array([1, 2])
+    Q = sd * sp.array([[1, 0.5], [0.5, 1]])
+    gamma = rmvnorm(mean=sp.zeros(q * 2), cov=block_diag(Q, q))
+    
     glme()
