@@ -1,7 +1,6 @@
 # Mixed models
 
 [![Project Status](http://www.repostatus.org/badges/latest/concept.svg)](http://www.repostatus.org/#concept)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/dirmeier/mixed-models/master)
 
 > Reference implementations for (generalized) linear mixed models.
 
