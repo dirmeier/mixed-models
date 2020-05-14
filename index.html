@@ -9129,15 +9129,15 @@ label {
 }
 /* Flexible box model classes */
 /* Taken from Alex Russell http://infrequently.org/2009/08/css-3-progress/ */
-/* This file is a compatability layer.  It allows the usage of flexible box
+/* This file is a compatability layer.  It allows the usage of flexible box 
 model layouts accross multiple browsers, including older browsers.  The newest,
 universal implementation of the flexible box model is used when available (see
-`Modern browsers` comments below).  Browsers that are known to implement this
+`Modern browsers` comments below).  Browsers that are known to implement this 
 new spec completely include:
 
     Firefox 28.0+
     Chrome 29.0+
-    Internet Explorer 11+
+    Internet Explorer 11+ 
     Opera 17.0+
 
 Browsers not listed, including Safari, are supported via the styling under the
@@ -12519,7 +12519,7 @@ div#pager .ui-resizable-handle {
   background: #f7f7f7;
   border-top: 1px solid #cfcfcf;
   border-bottom: 1px solid #cfcfcf;
-  /* This injects handle bars (a short, wide = symbol) for
+  /* This injects handle bars (a short, wide = symbol) for 
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
@@ -13017,58 +13017,6 @@ ul.typeahead-list  > li > a.pull-right {
 .highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
-<style type="text/css">
-
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-
-    </style>
-<style type="text/css">
-    /*This file contains any manual css for this page that needs to override the global styles.
-This is only required when different pages style the same element differently. This is just
-a hack to deal with our current css styles and no new styling should be added in this file.*/
-
-#ipython-main-app {
-    position: relative;
-}
-#jupyter-main-app {
-    position: relative;
-}
-
-    </style>
 
 
 <style type="text/css">
@@ -13085,20 +13033,20 @@ div#notebook {
   div.cell {
     display: block;
     page-break-inside: avoid;
-  }
-  div.output_wrapper {
+  } 
+  div.output_wrapper { 
     display: block;
-    page-break-inside: avoid;
+    page-break-inside: avoid; 
   }
-  div.output {
+  div.output { 
     display: block;
-    page-break-inside: avoid;
+    page-break-inside: avoid; 
   }
 }
 </style>
 
 <!-- Custom stylesheet, it must be in the same directory as the html file -->
-<link rel=stylesheet type=text/css href="custom.css">
+<link rel="stylesheet" href="custom.css">
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
@@ -13129,13 +13077,11 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Mixed-models">Mixed models<a class="anchor-link" href="#Mixed-models">&#182;</a></h1><p>Here, we try fitting generalized linear mixed effect models (GLMMs), i.e. models of the form:</p>
-\begin{align}
-\mathbb{E}\left[ y_{ij} \mid \boldsymbol \gamma_i \right] &amp;= h \left( \boldsymbol \eta_{ij} \right) \\
+<h1 id="Mixed-models">Mixed models<a class="anchor-link" href="#Mixed-models">&#182;</a></h1><p>Here, we implement generalized linear mixed effect models (GLMMs), i.e. models of the form:</p>
+\begin{align}\mathbb{E}\left[ y_{ij} \mid \boldsymbol \gamma_i \right] &amp;= h \left( \boldsymbol \eta_{ij} \right) \\
 \boldsymbol \eta_{ij} &amp; = \mathbf{x}_{ij}^T\boldsymbol \beta + \mathbf{u}_{ij}^T \boldsymbol \gamma_i
 \end{align}<p>for data $(y_{ij}, \mathbf{x}_{ij})$ that is grouped into $i \in \{1, \dots, m \}$ groups (or clusters) and $j \in \{1, \dots, n_i\}$ observations per group. For an intro on the notation, usual assumptions, etc. please refer to <em>any</em> book on regression models, as this is not part of this notebook.</p>
 <p>In the following we show, how $\boldsymbol \beta$ can be estimated and $\boldsymbol \gamma$ can be predicted for the Gaussian case and for the Poisson case. The implementations are not really efficient and don't use results from contemporary research (i.e., <code>lme4</code>'s PLS and PIRLS). Good references are for instance <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/0471722073">McCulloch and Searle (2001)</a>, <a href="https://link.springer.com/book/10.1007/b98882">Pinheiro and Bates (2000)</a> and <a href="https://link.springer.com/book/10.1007/978-0-387-47946-0">Jiang (2007)</a>.</p>
-<p><strong>I do not take warranty for the correctness or completeness of this document.</strong></p>
 <p>The relevant code can be found <a href="https://github.com/dirmeier/mixed-models">here</a>.</p>
 
 </div>
@@ -13157,8 +13103,8 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">st</span>
-<span class="kn">from</span> <span class="nn">patsy</span> <span class="k">import</span> <span class="n">dmatrices</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
 
 <span class="n">rmvnorm</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="o">.</span><span class="n">rvs</span>
 <span class="n">rpois</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">poisson</span><span class="o">.</span><span class="n">rvs</span>
@@ -13182,10 +13128,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">lme.ls</span> <span class="k">import</span> <span class="n">working_response</span><span class="p">,</span> <span class="n">working_weight</span><span class="p">,</span> <span class="n">irls</span>
-<span class="kn">from</span> <span class="nn">lme.marginal_likelhood</span> <span class="k">import</span> <span class="n">restricted_mll</span>
-<span class="kn">from</span> <span class="nn">lme.optim</span> <span class="k">import</span> <span class="n">optim</span>
-<span class="kn">from</span> <span class="nn">lme.util</span> <span class="k">import</span> <span class="n">block_diag</span><span class="p">,</span> <span class="n">cholesky_factor</span><span class="p">,</span> <span class="n">ranef_variance</span><span class="p">,</span> <span class="n">diag</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">lme.ls</span> <span class="kn">import</span> <span class="n">working_response</span><span class="p">,</span> <span class="n">working_weight</span><span class="p">,</span> <span class="n">irls</span>
+<span class="kn">from</span> <span class="nn">lme.marginal_likelhood</span> <span class="kn">import</span> <span class="n">restricted_mll</span>
+<span class="kn">from</span> <span class="nn">lme.optim</span> <span class="kn">import</span> <span class="n">optim</span>
+<span class="kn">from</span> <span class="nn">lme.util</span> <span class="kn">import</span> <span class="n">block_diag</span><span class="p">,</span> <span class="n">cholesky_factor</span><span class="p">,</span> <span class="n">ranef_variance</span><span class="p">,</span> <span class="n">diag</span>
 </pre></div>
 
     </div>
@@ -13328,7 +13274,7 @@ y_{ij} \mid \boldsymbol \gamma_i &amp; \sim \mathcal{N}\left(\mathbf{x}_{ij}^T\b
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To create the random effects matrix $\mathbf{U}$, let us first realize how $\mathbf{U}$ has to look: if we collect all cluster-specific responses $\mathbf{y}_i$ and the respective random effects $\boldsymbol \gamma_i$ into vectors, we get</p>
 \begin{align}
-\mathbf{y} =
+\mathbf{y} = 
 \begin{pmatrix}
 \mathbf{y}_1 \\
 \vdots\\
@@ -13343,7 +13289,7 @@ y_{2,1}\\
 y_{m,n_m}
 \end{pmatrix}
 ,\qquad
-\boldsymbol \gamma =
+\boldsymbol \gamma = 
 \begin{pmatrix}
 \boldsymbol \gamma_{1}\\
 \vdots\\
@@ -13579,7 +13525,7 @@ L\left(\sigma^2, \mathbf{Q} \right) = \int L\left(\boldsymbol \beta, \sigma^2, \
 <span class="n">opt</span> <span class="o">=</span> <span class="n">optim</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span>
             <span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
             <span class="p">((</span><span class="mf">0.01</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
-            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">))</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">))</span>    
 <span class="n">sd_hat</span><span class="p">,</span> <span class="n">nu_hat</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">opt</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 </pre></div>
 
@@ -13863,20 +13809,20 @@ gamma_hat:
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>          Mixed Linear Model Regression Results
 ==========================================================
-Model:             MixedLM  Dependent Variable:  Reaction
-No. Observations:  180      Method:              REML
-No. Groups:        18       Scale:               0.1045
+Model:             MixedLM  Dependent Variable:  Reaction 
+No. Observations:  180      Method:              REML     
+No. Groups:        18       Scale:               0.1045   
 Min. group size:   10       Likelihood:          -110.6631
-Max. group size:   10       Converged:           Yes
-Mean group size:   10.0
+Max. group size:   10       Converged:           Yes      
+Mean group size:   10.0                                   
 ----------------------------------------------------------
                  Coef. Std.Err.   z    P&gt;|z| [0.025 0.975]
 ----------------------------------------------------------
 Intercept        2.027    0.058 34.921 0.000  1.913  2.140
 Days             1.019    0.080 12.693 0.000  0.862  1.176
-Group Var        0.025    0.068
-Group x Days Cov 0.026    0.065
-Days Var         0.115    0.130
+Group Var        0.025    0.068                           
+Group x Days Cov 0.026    0.065                           
+Days Var         0.115    0.130                           
 ==========================================================
 
 </pre>
@@ -14036,7 +13982,7 @@ gamma_statsmodels:
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="n">y_tilde</span> <span class="o">=</span> <span class="n">working_response</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">b_tilde</span><span class="p">,</span> <span class="n">g_tilde</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">)</span>
     <span class="n">w_tilde</span> <span class="o">=</span> <span class="n">working_weight</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">b_tilde</span><span class="p">,</span> <span class="n">g_tilde</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">)</span>
-
+    
     <span class="n">nu_hat</span> <span class="o">=</span> <span class="n">optim</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span>
                    <span class="n">nu_hat</span><span class="p">,</span>
                    <span class="n">bounds</span><span class="o">=</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
@@ -14161,7 +14107,7 @@ gamma_hat:
   </div>
 </body>
 
-
+ 
 
 
 </html>
