@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>mixed-models</title>
+<title>Mixed models</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -9129,15 +9129,15 @@ label {
 }
 /* Flexible box model classes */
 /* Taken from Alex Russell http://infrequently.org/2009/08/css-3-progress/ */
-/* This file is a compatability layer.  It allows the usage of flexible box 
+/* This file is a compatability layer.  It allows the usage of flexible box
 model layouts accross multiple browsers, including older browsers.  The newest,
 universal implementation of the flexible box model is used when available (see
-`Modern browsers` comments below).  Browsers that are known to implement this 
+`Modern browsers` comments below).  Browsers that are known to implement this
 new spec completely include:
 
     Firefox 28.0+
     Chrome 29.0+
-    Internet Explorer 11+ 
+    Internet Explorer 11+
     Opera 17.0+
 
 Browsers not listed, including Safari, are supported via the styling under the
@@ -12519,7 +12519,7 @@ div#pager .ui-resizable-handle {
   background: #f7f7f7;
   border-top: 1px solid #cfcfcf;
   border-bottom: 1px solid #cfcfcf;
-  /* This injects handle bars (a short, wide = symbol) for 
+  /* This injects handle bars (a short, wide = symbol) for
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
@@ -13033,14 +13033,14 @@ div#notebook {
   div.cell {
     display: block;
     page-break-inside: avoid;
-  } 
-  div.output_wrapper { 
-    display: block;
-    page-break-inside: avoid; 
   }
-  div.output { 
+  div.output_wrapper {
     display: block;
-    page-break-inside: avoid; 
+    page-break-inside: avoid;
+  }
+  div.output {
+    display: block;
+    page-break-inside: avoid;
   }
 }
 </style>
@@ -13083,14 +13083,7 @@ div#notebook {
 \end{align}<p>for data $(y_{ij}, \mathbf{x}_{ij})$ that is grouped into $i \in \{1, \dots, m \}$ groups (or clusters) and $j \in \{1, \dots, n_i\}$ observations per group. For an intro on the notation, usual assumptions, etc. please refer to <em>any</em> book on regression models, as this is not part of this notebook.</p>
 <p>In the following we show, how $\boldsymbol \beta$ can be estimated and $\boldsymbol \gamma$ can be predicted for the Gaussian case and for the Poisson case. The implementations are not really efficient and don't use results from contemporary research (i.e., <code>lme4</code>'s PLS and PIRLS). Good references are for instance <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/0471722073">McCulloch and Searle (2001)</a>, <a href="https://link.springer.com/book/10.1007/b98882">Pinheiro and Bates (2000)</a> and <a href="https://link.springer.com/book/10.1007/978-0-387-47946-0">Jiang (2007)</a>.</p>
 <p>The relevant code can be found <a href="https://github.com/dirmeier/mixed-models">here</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We first load some libraries we need.</p>
+<p>Feedback and comments are welcome!</p>
 
 </div>
 </div>
@@ -13274,7 +13267,7 @@ y_{ij} \mid \boldsymbol \gamma_i &amp; \sim \mathcal{N}\left(\mathbf{x}_{ij}^T\b
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>To create the random effects matrix $\mathbf{U}$, let us first realize how $\mathbf{U}$ has to look: if we collect all cluster-specific responses $\mathbf{y}_i$ and the respective random effects $\boldsymbol \gamma_i$ into vectors, we get</p>
 \begin{align}
-\mathbf{y} = 
+\mathbf{y} =
 \begin{pmatrix}
 \mathbf{y}_1 \\
 \vdots\\
@@ -13289,7 +13282,7 @@ y_{2,1}\\
 y_{m,n_m}
 \end{pmatrix}
 ,\qquad
-\boldsymbol \gamma = 
+\boldsymbol \gamma =
 \begin{pmatrix}
 \boldsymbol \gamma_{1}\\
 \vdots\\
@@ -13525,7 +13518,7 @@ L\left(\sigma^2, \mathbf{Q} \right) = \int L\left(\boldsymbol \beta, \sigma^2, \
 <span class="n">opt</span> <span class="o">=</span> <span class="n">optim</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span>
             <span class="n">sp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
             <span class="p">((</span><span class="mf">0.01</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
-            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">))</span>    
+            <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">))</span>
 <span class="n">sd_hat</span><span class="p">,</span> <span class="n">nu_hat</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">opt</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
 </pre></div>
 
@@ -13809,20 +13802,20 @@ gamma_hat:
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>          Mixed Linear Model Regression Results
 ==========================================================
-Model:             MixedLM  Dependent Variable:  Reaction 
-No. Observations:  180      Method:              REML     
-No. Groups:        18       Scale:               0.1045   
+Model:             MixedLM  Dependent Variable:  Reaction
+No. Observations:  180      Method:              REML
+No. Groups:        18       Scale:               0.1045
 Min. group size:   10       Likelihood:          -110.6631
-Max. group size:   10       Converged:           Yes      
-Mean group size:   10.0                                   
+Max. group size:   10       Converged:           Yes
+Mean group size:   10.0
 ----------------------------------------------------------
                  Coef. Std.Err.   z    P&gt;|z| [0.025 0.975]
 ----------------------------------------------------------
 Intercept        2.027    0.058 34.921 0.000  1.913  2.140
 Days             1.019    0.080 12.693 0.000  0.862  1.176
-Group Var        0.025    0.068                           
-Group x Days Cov 0.026    0.065                           
-Days Var         0.115    0.130                           
+Group Var        0.025    0.068
+Group x Days Cov 0.026    0.065
+Days Var         0.115    0.130
 ==========================================================
 
 </pre>
@@ -13982,7 +13975,7 @@ gamma_statsmodels:
 <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
     <span class="n">y_tilde</span> <span class="o">=</span> <span class="n">working_response</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">b_tilde</span><span class="p">,</span> <span class="n">g_tilde</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">)</span>
     <span class="n">w_tilde</span> <span class="o">=</span> <span class="n">working_weight</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">b_tilde</span><span class="p">,</span> <span class="n">g_tilde</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">exp</span><span class="p">)</span>
-    
+
     <span class="n">nu_hat</span> <span class="o">=</span> <span class="n">optim</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span>
                    <span class="n">nu_hat</span><span class="p">,</span>
                    <span class="n">bounds</span><span class="o">=</span><span class="p">((</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)),</span>
@@ -14103,11 +14096,20 @@ gamma_hat:
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="License">License<a class="anchor-link" href="#License">&#182;</a></h2><p><a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img align="left" alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a> <br></p>
+<p>The case study is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International License</a>.</p>
+
+</div>
+</div>
+</div>
     </div>
   </div>
 </body>
 
- 
+
 
 
 </html>
