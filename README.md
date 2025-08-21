@@ -13,3 +13,7 @@ Having the variance components estimated, Henderson's mixed model equations are 
 
 - For GLMMs an IRLS approach is used. In the first step of each iteration variance components are estimated by using a Laplace approximation to the likelihood of the marginal model.
 In the second step we estimate the fixed effects and predict random effects using Henderson's mixed mdoel equations on working responses.
+
+## Author
+
+Simon Dirmeier <a href="mailto:simd23@pm.me">simd23 @ pm dot me</a>
