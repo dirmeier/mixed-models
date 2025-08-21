@@ -1,7 +1,5 @@
 # Mixed models
 
-[![Project Status](http://www.repostatus.org/badges/latest/concept.svg)](http://www.repostatus.org/#concept)
-
 > Reference implementations for (generalized) linear mixed models.
 
 ## About
@@ -15,7 +13,3 @@ Having the variance components estimated, Henderson's mixed model equations are 
 
 - For GLMMs an IRLS approach is used. In the first step of each iteration variance components are estimated by using a Laplace approximation to the likelihood of the marginal model.
 In the second step we estimate the fixed effects and predict random effects using Henderson's mixed mdoel equations on working responses.
- 
-## Author
-
-Simon Dirmeier <a href="mailto:simon.dirmeier@web.de">simon.dirmeier @ web.de</a>
